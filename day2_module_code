@@ -1,0 +1,44 @@
+import math
+import os
+import sys
+import random
+import json
+from datetime import datetime
+
+#  Basic Transaction Data
+customer_name = "Preetti"
+transaction_amount = 5000
+
+#  Generate Random Transaction ID
+transaction_id = random.randint(10000, 99999)
+
+#  Calculate Transaction Fee (2%)
+fee = math.ceil(transaction_amount * 0.02)
+
+#  Get Current Date & Time
+transaction_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+#  Create Transaction Record (Dictionary)
+transaction_record = {
+    "transaction_id": transaction_id,
+    "customer_name": customer_name,
+    "amount": transaction_amount,
+    "fee": fee,
+    "total_debited": transaction_amount + fee,
+    "date_time": transaction_time
+}
+
+#  Convert to JSON
+json_data = json.dumps(transaction_record, indent=4)
+
+#  Save JSON File to Current Directory
+file_path = os.path.join(os.getcwd(), "transaction_log.json")
+
+with open(file_path, "w") as file:
+    file.write(json_data)
+
+#  Display Information
+print("Transaction Successful!")
+print("Transaction ID:", transaction_id)
+print("File saved at:", file_path)
+print("Python Version:", sys.version)
