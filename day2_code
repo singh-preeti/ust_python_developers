@@ -41,3 +41,83 @@ print(result)
 
 print("Updated Balance:", customer["balance"])
 print("Transaction History:", customer["transactions"])
+
+
+
+
+
+#Version 2 included Exceptions
+# Custom Exceptions
+class InvalidAmountError(Exception):
+    pass
+
+class MinimumBalanceError(Exception):
+    pass
+
+
+customer = {
+    "account_no": 101,
+    "name": "Preetti",
+    "balance": 10000,
+    "min_balance": 1000,
+    "transactions": []
+}
+
+
+def transfer_funds(customer, amount, beneficiary):
+    try:
+        #  Validate amount
+        if amount <= 0:
+            raise InvalidAmountError("Transfer amount must be greater than zero.")
+
+        #  Check minimum balance rule
+        if customer["balance"] - amount < customer["min_balance"]:
+            raise MinimumBalanceError("Minimum balance rule violated.")
+
+        #  Deduct amount
+        customer["balance"] -= amount
+
+        #  Record transaction
+        customer["transactions"].append({
+            "type": "DEBIT",
+            "amount": amount,
+            "to": beneficiary
+        })
+
+        return f"₹{amount} transferred successfully to {beneficiary}."
+
+    except InvalidAmountError as e:
+        return f"Transaction Failed: {str(e)}"
+
+    except MinimumBalanceError as e:
+        return f"Transaction Failed: {str(e)}"
+
+    except Exception as e:
+        return f"Unexpected Error: {str(e)}"
+
+
+# Calling the Function
+result = transfer_funds(customer, 2000, "ABC Stores")
+print(result)
+
+print("Updated Balance:", customer["balance"])
+print("Transaction History:", customer["transactions"])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
