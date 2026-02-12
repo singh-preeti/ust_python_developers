@@ -1,0 +1,43 @@
+customer = {
+    "account_no": 101,
+    "name": "Preetti",
+    "balance": 10000,
+    "min_balance": 1000,
+    "transactions": []
+}
+
+def transfer_funds(customer, amount, beneficiary):
+    """
+    Transfers amount from customer account to beneficiary.
+    Returns transaction status message.
+    """
+
+    #️⃣ Validate amount
+    if amount <= 0:
+        return "Invalid transfer amount."
+
+    #️⃣ Check sufficient balance
+    if customer["balance"] - amount < customer["min_balance"]:
+        return "Insufficient balance. Minimum balance rule violated."
+
+    #️⃣ Deduct amount
+    customer["balance"] -= amount
+
+    #️⃣ Record transaction
+    transaction_record = {
+        "type": "DEBIT",
+        "amount": amount,
+        "to": beneficiary
+    }
+
+    customer["transactions"].append(transaction_record)
+
+    #️⃣ Return success message
+    return f"Transfer successful! ₹{amount} sent to {beneficiary}."
+
+ # Calling the Function
+result = transfer_funds(customer, 2000, "ABC Stores")
+print(result)
+
+print("Updated Balance:", customer["balance"])
+print("Transaction History:", customer["transactions"])
