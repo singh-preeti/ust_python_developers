@@ -1,0 +1,100 @@
+# ----------- Custom Exception -----------
+class OutOfStockException(Exception):
+    pass
+
+
+# ----------- Food Item Class -----------
+class FoodItem:
+    def __init__(self, food_id, name, price, stock):
+        self.food_id = food_id
+        self.name = name
+        self.price = price
+        self.stock = stock
+
+    def reduce_stock(self):
+        if self.stock <= 0:
+            raise OutOfStockException(f"{self.name} is out of stock!")
+        self.stock -= 1
+
+    def __str__(self):
+        return f"{self.food_id}. {self.name} ₹{self.price} (Stock: {self.stock})"
+
+    # Needed for set (avoid duplicates)
+    def __eq__(self, other):
+        return isinstance(other, FoodItem) and self.food_id == other.food_id
+
+    def __hash__(self):
+        return hash(self.food_id)
+
+
+# ----------- Restaurant Class -----------
+class Restaurant:
+    def __init__(self, name):
+        self.name = name
+        self.menu = set()   # Set of FoodItem
+
+    def add_food(self, food_item):
+        self.menu.add(food_item)
+
+    def show_menu(self):
+        for item in self.menu:
+            print(item)
+
+
+# ----------- Order Class -----------
+class Order:
+    def __init__(self):
+        self.items = []   # List of FoodItem
+
+    def add_item(self, food_item):
+        food_item.reduce_stock()
+        self.items.append(food_item)
+
+    def calculate_total(self):
+        return sum(item.price for item in self.items)
+
+
+# ----------- Main Application -----------
+def main():
+
+    # dict -> Map (Restaurant Name : Restaurant Object)
+    restaurants = {}
+
+    # Create Restaurant
+    food_palace = Restaurant("Food Palace")
+
+    food_palace.add_food(FoodItem(1, "Burger", 120, 2))
+    food_palace.add_food(FoodItem(2, "Pizza", 250, 1))
+    food_palace.add_food(FoodItem(3, "Pasta", 180, 0))
+
+    restaurants[food_palace.name] = food_palace
+
+    # Display Restaurants
+    print("Available Restaurants:")
+    for name in restaurants:
+        print(name)
+
+    # Display Menu
+    print("\nMenu of Food Palace:")
+    food_palace.show_menu()
+
+    order = Order()
+
+    try:
+        for item in food_palace.menu:
+            if item.name == "Burger":
+                order.add_item(item)
+            if item.name == "Pasta":  # Will raise exception
+                order.add_item(item)
+
+    except OutOfStockException as e:
+        print("Error:", e)
+
+    finally:
+        print("\nOrder Processing Completed")
+
+    print("Total Bill: ₹", order.calculate_total())
+
+
+if __name__ == "__main__":
+    main()
